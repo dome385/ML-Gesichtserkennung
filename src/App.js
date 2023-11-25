@@ -1,6 +1,6 @@
 import './App.css';
 import Navigation from './Components/Navigation/Navigation';
-import Logo from './Components/Logo/Logo.js'
+//import Logo from './Components/Logo/Logo.js'
 import ImageLinkForm from './Components/ImageLinkForm/ImageLinkForm.js';
 import Rank from './Components/Rank/Rank.js'
 import Facerecognition from './Components/Facerecognition/Facerecognition.js';
@@ -54,6 +54,12 @@ class App extends React.Component {
       route: 'signin',
       isSignedIn: false
     }
+  }
+
+  componentDidMount(){
+    fetch('http://localhost:4000')
+    .then(response => response.json())
+    .then(console.log)
   }
 
   onInputChange = (event) => { 
@@ -152,7 +158,6 @@ class App extends React.Component {
         { //Conditional Operator = return irgendwas ? true : false;
           this.state.route === 'home' 
         ? <div>
-          <Logo />
           <Rank />
           <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
           <Facerecognition imageUrl={this.state.imageUrl} box={this.state.box}/> 
