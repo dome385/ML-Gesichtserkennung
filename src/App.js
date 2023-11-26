@@ -52,15 +52,30 @@ class App extends React.Component {
       imageUrl: '',
       box: {},
       route: 'signin',
-      isSignedIn: false
+      isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        password: '',
+        entries: 0,
+        joined: ''
+      }
     }
   }
 
-  componentDidMount(){
-    fetch('http://localhost:4000')
-    .then(response => response.json())
-    .then(console.log)
+
+  loadUser = (data) => {
+    this.setState({user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        entries: data.entries,
+        joined: data.joined
+    }})
   }
+
 
   onInputChange = (event) => { 
       this.setState({input: event.target.value});
@@ -165,7 +180,7 @@ class App extends React.Component {
           : (
             this.state.route === 'signin' 
             ?  <Signin onRouteChange={this.onRouteChange} />
-            :  <Register onRouteChange={this.onRouteChange} />
+            :  <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
           )
 
         }
