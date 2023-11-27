@@ -67,12 +67,11 @@ class App extends React.Component {
 
   loadUser = (data) => {
     this.setState({user: {
-        id: data.id,
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        entries: data.entries,
-        joined: data.joined
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined
     }})
   }
 
@@ -139,7 +138,22 @@ class App extends React.Component {
     fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
     //.then(response => this.calculateFaceLocation(response))
     .then(response => response.json())
-    .then(result => this.displayFaceBox(this.calculateFaceLocation(result)))
+    .then(result => {
+      if(result){
+        fetch('http://localhost:4000/image',{
+          method: 'put',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            id: this.state.user.id
+          })
+          
+
+        })
+        
+      }
+      
+      this.displayFaceBox(this.calculateFaceLocation(result))})
+
     .catch(error => console.log('error', error));
 
 
@@ -173,13 +187,13 @@ class App extends React.Component {
         { //Conditional Operator = return irgendwas ? true : false;
           this.state.route === 'home' 
         ? <div>
-          <Rank />
+          <Rank name={this.state.user.name} entries={this.state.user.entries}/>
           <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
           <Facerecognition imageUrl={this.state.imageUrl} box={this.state.box}/> 
           </div>
           : (
             this.state.route === 'signin' 
-            ?  <Signin onRouteChange={this.onRouteChange} />
+            ?  <Signin onRouteChange={this.onRouteChange} loadUser={this.loadUser} />
             :  <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
           )
 
